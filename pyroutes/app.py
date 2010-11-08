@@ -6,16 +6,12 @@ import simplejson
 import urllib
 
 tr = TemplateRenderer()
-cache = memcache.Client(servers=['127.0.0.1:11211'])
 
 @route('/')
 def index(request):
     fml_endpoint = 'http://graph.facebook.com/search?q="so%20starving&type=post'
-    fb_data = cache.get(fml_endpoint)
-    if not fb_data:
-        fb_response = urllib.urlopen(fml_endpoint).read()
-        fb_data = simplejson.loads(fb_response)['data']
-        cache.set(fml_endpoint, fb_data)
+    fb_response = urllib.urlopen(fml_endpoint).read()
+    fb_data = simplejson.loads(fb_response)['data']
     return Response(tr.render('base.xml',
         {'ul': [
             {'li': {
